@@ -23,3 +23,19 @@
 ### Installation Prerequisites:
 - Python 3 must be installed.
 - pip should be available for installing Python dependencies.
+an  .ucn is like this
+---UCN PACKAGE MANAGER REF----
+name:yanix-launcher 
+developer:nikoyandere
+
+publisher: Yanix Launcher Community
+
+url:https://github.com/NikoYandere/yanix-launcher
+
+Comment:an Linux Launcher for Yandere simulator
+
+icon:https://raw.githubusercontent.com/NikoYandere/Yanix-
+
+Launcher/refs/heads/main/binary/data/Yanix-Launcher.png
+
+dependencies-system: python-pygame python-requests tk wine
