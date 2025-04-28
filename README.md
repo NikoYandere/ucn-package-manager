@@ -31,9 +31,13 @@ an  .ucn is like this
 
 ---UCN PACKAGE MANAGER REF----
 name:yanix-launcher 
+
 developer:nikoyandere
+
 publisher: Yanix Launcher Community
-url:https://github.com/NikoYandere/yanix-launcher
+
+url:https://github.com/NikoYandere/yanix
+-launcher
 
 Comment:an Linux Launcher for Yandere simulator
 
