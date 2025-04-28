@@ -32,15 +32,11 @@ an  .ucn is like this
 ---UCN PACKAGE MANAGER REF----
 name:yanix-launcher 
 developer:nikoyandere
-
 publisher: Yanix Launcher Community
-
 url:https://github.com/NikoYandere/yanix-launcher
 
 Comment:an Linux Launcher for Yandere simulator
 
-icon:https://raw.githubusercontent.com/NikoYandere/Yanix-
-
-Launcher/refs/heads/main/binary/data/Yanix-Launcher.png
+icon:
 
 dependencies-system: python-pygame python-requests tk wine
