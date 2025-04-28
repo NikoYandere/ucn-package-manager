@@ -1,20 +1,19 @@
 ucn is a simple Python-based package manager that allows you to install and manage your projects with ease. It can install dependencies and clone repositories directly from GitHub or other Git-based platforms using a .ucn file or a direct URL.
 Features
 
-    Installs system dependencies using supported package managers.
+    **Installs system dependencies using supported package managers.**
 
     Installs Python dependencies using pip.
 
     Clones repositories from URLs or .ucn files.
 
     Supports installation and update commands.
-
 Usage
 Install
 
 To install a package or project:
 
-ucn install <package.ucn|url>
+    *ucn install <package.ucn|url>
 
     <package.ucn>: Path to a .ucn file.
 
