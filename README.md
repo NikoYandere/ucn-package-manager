@@ -13,7 +13,7 @@ Install
 
 To install a package or project:
 
-    *ucn install <package.ucn|url>
+    ucn install <package.ucn|url>
 
     <package.ucn>: Path to a .ucn file.
 
