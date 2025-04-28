@@ -27,7 +27,9 @@ an  .ucn is like this
 
 
 
-`---UCN PACKAGE MANAGER REF----
+
+
+---UCN PACKAGE MANAGER REF----
 name:yanix-launcher 
 developer:nikoyandere
 
@@ -41,4 +43,4 @@ icon:https://raw.githubusercontent.com/NikoYandere/Yanix-
 
 Launcher/refs/heads/main/binary/data/Yanix-Launcher.png
 
-dependencies-system: python-pygame python-requests tk wine`
+dependencies-system: python-pygame python-requests tk wine
