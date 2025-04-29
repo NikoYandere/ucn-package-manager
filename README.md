@@ -18,19 +18,4 @@ an  .ucn is like this
 
 
 
-
----UCN PACKAGE MANAGER REF----
-name:yanix-launcher 
-
-developer:nikoyandere
-
-publisher: Yanix Launcher Community
-
-url:https://github.com/NikoYandere/yanix
--launcher
-
-Comment:an Linux Launcher for Yandere simulator
-
-icon:
-
-dependencies-system: python-pygame python-requests tk wine
+![image](https://github.com/user-attachments/assets/80091db6-59ef-4771-a65d-620082d54f2d)
