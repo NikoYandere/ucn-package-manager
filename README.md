@@ -7,18 +7,8 @@
 - Supports install and update commands.
 
 ### Usage:
-- **Install a package**: `ucn install <package.ucn|url>`
-- **Update a package**: `ucn update <package.ucn|url>`
-
-### Supported Package Managers:
-- **apt** (Ubuntu/Debian)
-- **dnf** (Fedora)
-- **pacman** (Arch)
-
-### Unsupported Package Managers:
-- **snap**
-- **flatpak**
-- **nix**
+- **Install a package**: `ucn install <package.ucn|url or .ucr>`
+- **Update a package**: `ucn update <package.ucn|url or ucr>`
 
 ### Installation Prerequisites:
 - Python 3 must be installed.
