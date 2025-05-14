@@ -3,6 +3,8 @@ import urllib.request
 import subprocess
 import os
 import sys
+HOME = os.path.expanduser("~")
+REPOS_FILE = os.path.join(HOME, ".local", "share", "ucn-repos", "repos.txt")
 
 def install_ucn(file_path):
     with open(file_path, 'r') as f:
