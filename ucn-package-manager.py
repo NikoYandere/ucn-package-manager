@@ -3,6 +3,7 @@ import urllib.request
 import subprocess
 import os
 import sys
+import shutil
 HOME = os.path.expanduser("~")
 REPOS_FILE = os.path.join(HOME, ".local", "share", "ucn-repos", "repos.txt")
 
