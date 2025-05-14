@@ -128,6 +128,9 @@ def main():
     if len(sys.argv) < 3:
         print("Usage: install <package> | install <url> | install <.ucn/.ucr> | remove <package> | update <package> | add-repo <git-url> | remove-repo <repo-name>")
         return
+def clone_repo(url):
+    target_dir = os.path.join(HOME, url.split('/')[-1].replace('.git', ''))
+    subprocess.run(["git", "clone", url, target_dir])
 
     command = sys.argv[1]
     target = sys.argv[2]
