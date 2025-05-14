@@ -1,6 +1,7 @@
 import urllib.request
 import subprocess
 import os
+import sys
 
 def install_ucn(file_path):
     with open(file_path, 'r') as f:
