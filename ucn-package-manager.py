@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-import urllib.request
-import subprocess
 import os
 import sys
+import subprocess
+import zipfile
 import shutil
+import urllib.request
+
+
 HOME = os.path.expanduser("~")
 REPOS_FILE = os.path.join(HOME, ".local", "share", "ucn-repos", "repos.txt")
 
@@ -13,30 +16,39 @@ def install_ucn(file_path):
 
     url = None
     dependencies = []
-    exec_command = None
 
     for line in lines:
         if line.startswith('url:'):
             url = line.split('url:')[1].strip()
-        elif line.startswith('dependencies='):
+        if line.startswith('dependencies='):
             dep_line = line.split('dependencies=')[1].strip()
-            dependencies.extend(dep_line.split())
-        elif line.startswith('exec='):
-            exec_command = line.split('exec=')[1].strip()
+            deps = dep_line.split()
+            dependencies.extend(deps)
 
     if dependencies:
+        print("Installing dependencies...")
         install_dependencies(dependencies)
 
     if url:
         clone_repo(url)
 
-    if exec_command:
-        try:
-            subprocess.run(exec_command, check=True, shell=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Error while executing {exec_command}: {e}")
-        except FileNotFoundError:
-            print(f"Executable {exec_command} not found.")
+def install_ucr(file_path):
+    extract_dir = os.path.join(HOME, os.path.splitext(os.path.basename(file_path))[0])
+    print(f"Extracting {file_path}...")
+    try:
+        with zipfile.ZipFile(file_path, 'r') as zip_ref:
+            zip_ref.extractall(extract_dir)
+        print(f"Extracted to {extract_dir}")
+    except PermissionError:
+        print(f"Permission denied while extracting to {extract_dir}")
+
+def install_from_url(url):
+    print(f"Cloning repository from {url}...")
+    clone_repo(url)
+
+def clone_repo(url):
+    target_dir = os.path.join(HOME, url.split('/')[-1].replace('.git', ''))
+    subprocess.run(["git", "clone", url, target_dir])
 
 def install_dependencies(dependencies):
     for dep in dependencies:
@@ -84,6 +96,7 @@ def remove_repo(repo_name):
                 f.write(repo)
     print(f"Repository {repo_name} removed.")
 
+
 def install_from_repos(package_name):
     if not os.path.exists(REPOS_FILE):
         print("No repositories added.")
@@ -107,6 +120,8 @@ def install_from_repos(package_name):
 
     print(f"Package {package_name} not found in any repository.")
 
+
+
 def remove_package(package_name):
     path = os.path.join(HOME, package_name)
     if os.path.exists(path):
@@ -128,9 +143,6 @@ def main():
     if len(sys.argv) < 3:
         print("Usage: install <package> | install <url> | install <.ucn/.ucr> | remove <package> | update <package> | add-repo <git-url> | remove-repo <repo-name>")
         return
-def clone_repo(url):
-    target_dir = os.path.join(HOME, url.split('/')[-1].replace('.git', ''))
-    subprocess.run(["git", "clone", url, target_dir])
 
     command = sys.argv[1]
     target = sys.argv[2]
