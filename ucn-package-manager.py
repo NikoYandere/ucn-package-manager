@@ -6,166 +6,239 @@ import zipfile
 import shutil
 import urllib.request
 
-
 HOME = os.path.expanduser("~")
 REPOS_FILE = os.path.join(HOME, ".local", "share", "ucn-repos", "repos.txt")
+PKG_BASE_DIR = os.path.join(HOME, ".ucndata", "packages")
+PM_COMMANDS = {
+    "apt":    {"update": ["apt", "update"],     "install": ["apt", "install", "-y"]},
+    "dnf":    {"update": ["dnf", "makecache"],  "install": ["dnf", "install", "-y"]},
+    "zypper": {"update": ["zypper", "refresh"],  "install": ["zypper", "install", "-y"]},
+    "pacman": {"update": ["pacman", "-Sy"],      "install": ["pacman", "-S", "--noconfirm"]},
+    "xbps-install": {"update": ["xbps-install", "-Sy"], "install": ["xbps-install", "-S", "-y"]},
+    "emerge": {"update": None,                     "install": ["emerge"]}
+}
 
-def install_ucn(file_path):
-    with open(file_path, 'r') as f:
-        lines = f.readlines()
-
-    url = None
-    dependencies = []
-
-    for line in lines:
-        if line.startswith('url:'):
-            url = line.split('url:')[1].strip()
-        if line.startswith('dependencies='):
-            dep_line = line.split('dependencies=')[1].strip()
-            deps = dep_line.split()
-            dependencies.extend(deps)
-
-    if dependencies:
-        print("Installing dependencies...")
-        install_dependencies(dependencies)
-
-    if url:
-        clone_repo(url)
-
-def install_ucr(file_path):
-    extract_dir = os.path.join(HOME, os.path.splitext(os.path.basename(file_path))[0])
-    print(f"Extracting {file_path}...")
-    try:
-        with zipfile.ZipFile(file_path, 'r') as zip_ref:
-            zip_ref.extractall(extract_dir)
-        print(f"Extracted to {extract_dir}")
-    except PermissionError:
-        print(f"Permission denied while extracting to {extract_dir}")
-
-def install_from_url(url):
-    print(f"Cloning repository from {url}...")
-    clone_repo(url)
-
-def clone_repo(url):
-    target_dir = os.path.join(HOME, url.split('/')[-1].replace('.git', ''))
-    subprocess.run(["git", "clone", url, target_dir])
-
-def install_dependencies(dependencies):
-    for dep in dependencies:
-        if dep.startswith("system:"):
-            system_deps = dep.split("system:")[1].split()
-            package_manager = detect_package_manager()
-            if package_manager:
-                subprocess.run([package_manager, "install", "-y"] + system_deps)
-        elif dep.startswith("flatpak:"):
-            flatpak_deps = dep.split("flatpak:")[1].split()
-            subprocess.run(["flatpak", "install", "-y"] + flatpak_deps)
-        elif dep.startswith("snap:"):
-            snap_deps = dep.split("snap:")[1].split()
-            subprocess.run(["snap", "install"] + snap_deps)
-        elif dep.startswith("makepkg:"):
-            makepkg_deps = dep.split("makepkg:")[1].split()
-            for pkg in makepkg_deps:
-                subprocess.run(["git", "clone", pkg])
-                folder = pkg.split("/")[-1]
-                os.chdir(folder)
-                subprocess.run(["makepkg", "-si"])
+def run_sudo(cmd_list):
+    if os.geteuid() != 0:
+        cmd_list.insert(0, "sudo")
+    subprocess.run(cmd_list, check=True)
 
 def detect_package_manager():
-    managers = ["apt", "dnf", "zypper", "pacman", "xbps-install", "emerge"]
-    for manager in managers:
-        if shutil.which(manager):
-            return manager
+    for pm in PM_COMMANDS:
+        if shutil.which(pm):
+            return pm
     return None
 
-def add_repo(repo_url):
+def parse_manifest(manifest_text):
+    meta = {}
+    deps = {}
+    lines = manifest_text.splitlines()
+    current = None
+    acc = []
+    last_key = None
+    for line in lines:
+        line = line.strip()
+        if not line or line.startswith('--'):
+            continue
+        if ':' in line and current is None:
+            k, v = line.split(':', 1)
+            meta[k.strip().lower()] = v.strip()
+        elif line.lower() == 'dependencies':
+            current = 'deps'
+        elif current == 'deps':
+            if line.startswith('(') and line.endswith(')'):
+                if acc and last_key:
+                    deps[last_key] = acc
+                last_key = line[1:-1].lower()
+                acc = []
+            else:
+                if line:
+                    acc.extend(line.split())
+    if current == 'deps' and acc and last_key:
+        deps[last_key] = acc
+    meta['dependencies'] = deps
+    return meta
+
+def install_dependencies(deps):
+    pm = detect_package_manager()
+    for d, pkgs in deps.items():
+        if d == 'winetricks':
+            for pkg in pkgs:
+                run_sudo(["winetricks", pkg])
+        elif d == 'flatpak':
+            run_sudo(["flatpak", "install", "-y"] + pkgs)
+        elif d == 'snap':
+            run_sudo(["snap", "install"] + pkgs)
+        elif d == 'makepkg':
+            cwd = os.getcwd()
+            for repo in pkgs:
+                run_sudo(["git", "clone", repo])
+                folder = os.path.basename(repo)
+                os.chdir(folder)
+                run_sudo(["makepkg", "-si"])
+                os.chdir(cwd)
+        else:
+            if d == pm:
+                cmds = PM_COMMANDS[pm]
+                if cmds.get('update'):
+                    run_sudo(cmds['update'])
+                run_sudo(cmds['install'] + pkgs)
+
+def extract_ucn_package(file_path, package_name):
+    target = os.path.join(PKG_BASE_DIR, package_name)
+    os.makedirs(target, exist_ok=True)
+    with zipfile.ZipFile(file_path, 'r') as z:
+        root = None
+        for f in z.namelist():
+            if '/' in f:
+                root = f.split('/', 1)[0]
+                break
+        for member in z.namelist():
+            if root and member.startswith(root + '/'):
+                rel = member[len(root)+1:]
+            else:
+                rel = member
+            if not rel:
+                continue
+            path = os.path.join(target, rel)
+            if member.endswith('/'):
+                os.makedirs(path, exist_ok=True)
+            else:
+                os.makedirs(os.path.dirname(path), exist_ok=True)
+                with z.open(member) as src, open(path, 'wb') as dst:
+                    shutil.copyfileobj(src, dst)
+
+def install_ucn(file_path):
+    with zipfile.ZipFile(file_path, 'r') as z:
+        manifest = None
+        for f in z.namelist():
+            if f.endswith('-manifest'):
+                manifest = f
+                break
+        if not manifest:
+            print("Manifest not found")
+            return
+        text = z.read(manifest).decode('utf-8')
+    meta = parse_manifest(text)
+    name = meta.get('name')
+    if not name:
+        print("Name missing")
+        return
+    deps = meta.get('dependencies', {})
+    if deps:
+        install_dependencies(deps)
+    extract_ucn_package(file_path, name)
+    cmd = meta.get('exec')
+    if cmd:
+        subprocess.run(cmd, shell=True, check=True, cwd=os.path.join(PKG_BASE_DIR, name))
+
+def run_ucn(pkg_name):
+    if pkg_name.endswith('.ucn'):
+        pkg_name = pkg_name[:-4]
+    pkg_dir = os.path.join(PKG_BASE_DIR, pkg_name)
+    if not os.path.isdir(pkg_dir):
+        print(f"Package {pkg_name} not installed")
+        return
+    manifest_path = None
+    for root, _, files in os.walk(pkg_dir):
+        for f in files:
+            if f.endswith('-manifest'):
+                manifest_path = os.path.join(root, f)
+                break
+        if manifest_path:
+            break
+    if not manifest_path:
+        print("Manifest not found")
+        return
+    with open(manifest_path) as mf:
+        text = mf.read()
+    meta = parse_manifest(text)
+    cmd = meta.get('exec')
+    if not cmd:
+        print("No exec command in manifest")
+        return
+    subprocess.run(cmd, shell=True, check=True, cwd=pkg_dir)
+
+def add_repo(url):
     os.makedirs(os.path.dirname(REPOS_FILE), exist_ok=True)
     with open(REPOS_FILE, 'a') as f:
-        f.write(repo_url + "\n")
-    print(f"Repository {repo_url} added.")
+        f.write(url.rstrip('/') + "\n")
 
-def remove_repo(repo_name):
+def remove_repo(name):
     if not os.path.exists(REPOS_FILE):
-        print("No repositories added.")
         return
-    with open(REPOS_FILE, 'r') as f:
-        repos = f.readlines()
+    with open(REPOS_FILE) as f:
+        lines = f.readlines()
     with open(REPOS_FILE, 'w') as f:
-        for repo in repos:
-            if repo_name not in repo:
-                f.write(repo)
-    print(f"Repository {repo_name} removed.")
+        for l in lines:
+            if name not in l:
+                f.write(l)
 
-
-def install_from_repos(package_name):
+def install_from_repos(pkg):
     if not os.path.exists(REPOS_FILE):
-        print("No repositories added.")
+        print("No repos")
         return
-    with open(REPOS_FILE, 'r') as f:
-        repos = f.readlines()
-
-    for repo in repos:
-        repo = repo.strip().rstrip('/')
-        ucn_url = f"{repo}/{package_name}.ucn"
+    with open(REPOS_FILE) as f:
+        repos = [r.strip().rstrip('/') for r in f]
+    for r in repos:
+        url = f"{r}/{pkg}.ucn"
         try:
-            print(f"Trying to download {ucn_url}...")
-            local_path = os.path.join("/tmp", f"{package_name}.ucn")
-            urllib.request.urlretrieve(ucn_url, local_path)
-            print(f"Downloaded {package_name}.ucn")
-            install_ucn(local_path)
-            os.remove(local_path)
+            tmp = os.path.join("/tmp", f"{pkg}.ucn")
+            urllib.request.urlretrieve(url, tmp)
+            install_ucn(tmp)
+            os.remove(tmp)
             return
-        except Exception as e:
-            print(f"Failed to download from {repo}: {e}")
+        except:
+            continue
+    print(f"{pkg} not found")
 
-    print(f"Package {package_name} not found in any repository.")
-
-
-
-def remove_package(package_name):
-    path = os.path.join(HOME, package_name)
+def remove_package(pkg):
+    path = os.path.join(PKG_BASE_DIR, pkg)
     if os.path.exists(path):
         shutil.rmtree(path)
-        print(f"Package {package_name} removed.")
     else:
-        print(f"Package {package_name} not found.")
+        print(f"{pkg} not installed")
 
-def update_package(package_name):
-    path = os.path.join(HOME, package_name)
+def update_package(pkg):
+    path = os.path.join(PKG_BASE_DIR, pkg)
     if os.path.exists(path):
-        os.chdir(path)
-        subprocess.run(["git", "pull"])
-        print(f"Package {package_name} updated.")
+        gitd = os.path.join(path, '.git')
+        if os.path.exists(gitd):
+            os.chdir(path)
+            run_sudo(["git", "pull"])
     else:
-        print(f"Package {package_name} not installed.")
+        print(f"{pkg} not installed")
 
 def main():
     if len(sys.argv) < 3:
-        print("Usage: install <package> | install <url> | install <.ucn/.ucr> | remove <package> | update <package> | add-repo <git-url> | remove-repo <repo-name>")
+        print("Usage: install <.ucn|url|pkg> | run <pkg> | remove <pkg> | update <pkg> | add-repo <url> | remove-repo <name>")
         return
-
-    command = sys.argv[1]
-    target = sys.argv[2]
-
-    if command == "install":
-        if target.endswith(".ucn"):
-            install_ucn(target)
-        elif target.endswith(".ucr"):
-            install_ucr(target)
-        elif target.startswith("http"):
-            install_from_url(target)
+    cmd, arg = sys.argv[1], sys.argv[2]
+    if cmd == 'install':
+        if arg.endswith('.ucn'):
+            install_ucn(arg)
+        elif arg.startswith('http'):
+            name = os.path.basename(arg.rstrip('/')).replace('.git', '')
+            target = os.path.join(PKG_BASE_DIR, name)
+            if os.path.exists(target):
+                os.chdir(target)
+                run_sudo(["git", "pull"])
+            else:
+                run_sudo(["git", "clone", arg, target])
         else:
-            install_from_repos(target)
-    elif command == "remove":
-        remove_package(target)
-    elif command == "update":
-        update_package(target)
-    elif command == "add-repo":
-        add_repo(target)
-    elif command == "remove-repo":
-        remove_repo(target)
+            install_from_repos(arg)
+    elif cmd == 'run':
+        run_ucn(arg)
+    elif cmd == 'remove':
+        remove_package(arg)
+    elif cmd == 'update':
+        update_package(arg)
+    elif cmd == 'add-repo':
+        add_repo(arg)
+    elif cmd == 'remove-repo':
+        remove_repo(arg)
     else:
-        print(f"Unknown command: {command}")
+        print(f"Unknown: {cmd}")
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
