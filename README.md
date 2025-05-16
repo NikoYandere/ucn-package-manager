@@ -1,6 +1,4 @@
-Got it! Here’s your updated README including the MIT License section:
 
-````markdown
 # UCN Package Manager
 
 UCN is a simple, user-centric package manager designed to manage and run applications organized as packages on your system. It provides an easy way to install, update, remove, and run packages from local files or remote repositories.
