@@ -190,7 +190,7 @@ def install_from_repos(pkg):
             return
         except:
             continue
-    print(f"{pkg} not found")
+    print(f"{pkg} not found in repos")
 
 def remove_package(pkg):
     path = os.path.join(PKG_BASE_DIR, pkg)
@@ -211,32 +211,34 @@ def update_package(pkg):
 
 def main():
     if len(sys.argv) < 3:
-        print("Usage: install <.ucn|url|pkg> | run <pkg> | remove <pkg> | update <pkg> | add-repo <url> | remove-repo <name>")
+        print("Usage: install <.ucn|url|pkg> | install --from-repos <pkg> | run <pkg> | remove <pkg> | update <pkg> | add-repo <url> | remove-repo <name>")
         return
-    cmd, arg = sys.argv[1], sys.argv[2]
-    if cmd == 'install':
-        if arg.endswith('.ucn'):
-            install_ucn(arg)
-        elif arg.startswith('http'):
-            name = os.path.basename(arg.rstrip('/')).replace('.git', '')
-            target = os.path.join(PKG_BASE_DIR, name)
-            if os.path.exists(target):
-                os.chdir(target)
-                run_sudo(["git", "pull"])
-            else:
-                run_sudo(["git", "clone", arg, target])
+    cmd = sys.argv[1]
+    if cmd == 'install' and len(sys.argv) == 4 and sys.argv[2] == '--from-repos':
+        install_from_repos(sys.argv[3])
+    elif cmd == 'install' and sys.argv[2].endswith('.ucn'):
+        install_ucn(sys.argv[2])
+    elif cmd == 'install' and sys.argv[2].startswith('http'):
+        url = sys.argv[2]
+        name = os.path.basename(url.rstrip('/')).replace('.git', '')
+        target = os.path.join(PKG_BASE_DIR, name)
+        if os.path.exists(target):
+            os.chdir(target)
+            run_sudo(["git", "pull"])
         else:
-            install_from_repos(arg)
+            run_sudo(["git", "clone", url, target])
+    elif cmd == 'install':
+        install_from_repos(sys.argv[2])
     elif cmd == 'run':
-        run_ucn(arg)
+        run_ucn(sys.argv[2])
     elif cmd == 'remove':
-        remove_package(arg)
+        remove_package(sys.argv[2])
     elif cmd == 'update':
-        update_package(arg)
+        update_package(sys.argv[2])
     elif cmd == 'add-repo':
-        add_repo(arg)
+        add_repo(sys.argv[2])
     elif cmd == 'remove-repo':
-        remove_repo(arg)
+        remove_repo(sys.argv[2])
     else:
         print(f"Unknown: {cmd}")
 
