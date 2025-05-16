@@ -23,7 +23,6 @@ To integrate UCN into your system, you typically:
 2. Create a folder for your installed packages in your home directory:  
    ```bash
    mkdir -p ~/.ucndata/packages
-````
 
 3. Optionally, create a file to store your configured repositories:
 
