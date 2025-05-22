@@ -1,21 +1,91 @@
-MIT License
 
-Copyright (c) 2025 NikoYandere
+Niko's License (NLv1) Version 1.0 — May 2025
+Copyright © NikoYandere,2025
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Niko's License (NLv1) is designed to promote free and open-source software development while protecting the original creator's rights to commercial exploitation. It encourages sharing, modification, and collaborative improvements under open-source principles, but strictly restricts unauthorized commercial distribution. This license fosters an ecosystem of openness with fairness in monetization for original authors.
+1. Definitions
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+    "Original Work" refers to the software, codebase, or project as released by the original copyright holder under this license.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+    "Derivative Work" means any work that is based upon, derived from, or modified from the Original Work, including forks, ports, modifications, enhancements, or translations.
+
+    "You" or "Licensee" refers to any individual or entity exercising rights under this license.
+
+    "Distribution" means any act of providing, publishing, or sharing the Original Work or Derivative Work with others by any means, including digital, physical, or networked methods.
+
+    "Commercial Distribution" means distribution where a fee, payment, or any form of monetary compensation is required or expected from recipients.
+
+    "Freemium Model" means a licensing or distribution model where a version of the software is available freely (open-source and free of charge) and optional paid features or services are offered by the original copyright holder.
+
+2. Grant of Rights
+
+Subject to the terms and conditions of this license, the Original Work is licensed to You under the following provisions:
+2.1 Use, Copy, Modify
+
+You are free to use, copy, study, and modify the Original Work or any Derivative Work for personal, educational, or commercial purposes without limitation.
+2.2 Redistribution of Original and Derivative Works
+
+    You may redistribute the Original Work and Derivative Works only under this license (NLv1).
+
+    Any redistribution must include this license text, disclaimers, and all copyright notices intact.
+
+3. Restrictions on Commercial Distribution
+3.1 Prohibition on Unauthorized Commercial Distribution
+
+You may NOT distribute, sell, license, or otherwise commercially exploit the Original Work or any Derivative Work for any form of monetary compensation unless you are the original copyright holder or have express written permission from the original copyright holder.
+
+This includes, but is not limited to:
+
+    Selling copies of the software.
+
+    Charging for downloads, access, or distribution.
+
+    Including the software in paid bundles or packages without permission.
+
+3.2 Freemium Model Reserved for Original Copyright Holder
+
+Only the original copyright holder may offer:
+
+    Commercial versions, paid licenses, or paid services.
+
+    Freemium models where the core remains open-source and free, but additional paid features or services exist.
+
+Any such commercial offerings must remain compatible with the open-source nature of the Original Work.
+4. Derivative Works Must Be Open Source
+
+Any Derivative Work you create and distribute must be licensed as open-source under the same terms as this license (NLv1).
+
+    You must provide complete source code of the Derivative Work when distributing it.
+
+    You must not impose additional restrictions that conflict with this license.
+
+    You must clearly state changes made to the Original Work.
+
+5. Attribution and Notices
+
+    You must give appropriate credit to the original author(s).
+
+    You must include a copy of this license with every copy of the Original or Derivative Work.
+
+    You must not remove, obscure, or alter existing copyright or license notices.
+
+6. Disclaimer of Warranty
+
+THE ORIGINAL WORK AND ANY DERIVATIVE WORKS ARE PROVIDED "AS IS," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+7. Limitation of Liability
+
+IN NO EVENT SHALL THE ORIGINAL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OR DISTRIBUTION OF THE ORIGINAL OR DERIVATIVE WORKS.
+8. Termination
+
+    This license and the rights granted will terminate automatically if You fail to comply with any of its terms.
+
+    Upon termination, You must cease all use, distribution, and modification of the Original and Derivative Works.
+
+    However, termination does not affect rights granted to other licensees in compliance with this license.
+
+9. Governing Law
+
+This license shall be governed by and construed in accordance with the laws of the jurisdiction where the original copyright holder resides, without regard to conflict of law principles.
+10. Acceptance
+
+By using, copying, modifying, or distributing the Original or Derivative Work, You agree to be bound by the terms of this license.
