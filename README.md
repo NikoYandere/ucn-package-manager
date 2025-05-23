@@ -8,7 +8,6 @@ UCN is a simple, user-centric package manager designed to manage and run applica
 ## Features
 
 - Install packages from local `.ucn` files or remote repositories  
-- Manage package dependencies for multiple package managers (pacman, apt, dnf, etc.)  
 - Execute packages directly using their defined startup commands  
 - Add or remove package repositories  
 - Organize installed packages under your home directory for easy management  
