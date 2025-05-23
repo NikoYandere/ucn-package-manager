@@ -1,91 +1,68 @@
+Niko's License Version 2 Balanced (NLV2 Balanced)
 
-Niko's License (NLv1) Version 1.0 — May 2025
-Copyright © NikoYandere,2025
+Copyright © NikoYandere, 2025
+Summary
 
-Niko's License (NLv1) is designed to promote free and open-source software development while protecting the original creator's rights to commercial exploitation. It encourages sharing, modification, and collaborative improvements under open-source principles, but strictly restricts unauthorized commercial distribution. This license fosters an ecosystem of openness with fairness in monetization for original authors.
+NLV2 Balanced is a license designed to provide a fair middle ground between maximum freedom and protection of original authorship. It allows use, modification, and redistribution, including commercial use, while requiring attribution and ensuring derivative works remain open source under similar terms. This license supports collaboration and commercial opportunities with respect to the original creator’s rights.
 1. Definitions
 
-    "Original Work" refers to the software, codebase, or project as released by the original copyright holder under this license.
+    Original Work: The software, codebase, or project as released by the original copyright holder under this license.
 
-    "Derivative Work" means any work that is based upon, derived from, or modified from the Original Work, including forks, ports, modifications, enhancements, or translations.
+    Derivative Work: Any work based upon, derived from, or modified from the Original Work, including forks, ports, modifications, enhancements, or translations.
 
-    "You" or "Licensee" refers to any individual or entity exercising rights under this license.
+    You or Licensee: Any individual or entity exercising rights under this license.
 
-    "Distribution" means any act of providing, publishing, or sharing the Original Work or Derivative Work with others by any means, including digital, physical, or networked methods.
+    Distribution: Any act of providing, publishing, or sharing the Original Work or Derivative Work with others by any means, including digital, physical, or networked methods.
 
-    "Commercial Distribution" means distribution where a fee, payment, or any form of monetary compensation is required or expected from recipients.
-
-    "Freemium Model" means a licensing or distribution model where a version of the software is available freely (open-source and free of charge) and optional paid features or services are offered by the original copyright holder.
+    Commercial Distribution: Distribution where a fee, payment, or monetary compensation is required or expected from recipients.
 
 2. Grant of Rights
 
-Subject to the terms and conditions of this license, the Original Work is licensed to You under the following provisions:
-2.1 Use, Copy, Modify
+Subject to compliance with this license, you are granted:
 
-You are free to use, copy, study, and modify the Original Work or any Derivative Work for personal, educational, or commercial purposes without limitation.
-2.2 Redistribution of Original and Derivative Works
+    The right to use, copy, study, modify, and distribute the Original Work and Derivative Works for any purpose, including commercial.
 
-    You may redistribute the Original Work and Derivative Works only under this license (NLv1).
+    Redistribution of Original and Derivative Works is permitted only under the terms of this license (NLV2 Balanced).
 
-    Any redistribution must include this license text, disclaimers, and all copyright notices intact.
+    You must include this license text, disclaimers, and all copyright notices intact in all copies or substantial portions of the Work.
 
-3. Restrictions on Commercial Distribution
-3.1 Prohibition on Unauthorized Commercial Distribution
+3. Conditions on Redistribution
 
-You may NOT distribute, sell, license, or otherwise commercially exploit the Original Work or any Derivative Work for any form of monetary compensation unless you are the original copyright holder or have express written permission from the original copyright holder.
+    Any Derivative Work must be licensed under NLV2 Balanced or a compatible open-source license that preserves the same freedoms and obligations.
 
-This includes, but is not limited to:
+    You must provide access to the complete source code of any Derivative Work distributed.
 
-    Selling copies of the software.
+    You must clearly state any changes made from the Original Work in the documentation or accompanying materials.
 
-    Charging for downloads, access, or distribution.
+    Attribution to the original author(s) must be clearly given in all redistributions.
 
-    Including the software in paid bundles or packages without permission.
+4. Commercial Use and Distribution
 
-3.2 Freemium Model Reserved for Original Copyright Holder
+    Commercial use and distribution of the Original Work or Derivative Works is permitted without explicit permission.
 
-Only the original copyright holder may offer:
+    You may charge for distribution, access, or services related to the software.
 
-    Commercial versions, paid licenses, or paid services.
+    You may include the software in commercial products or bundles, provided all terms of this license are respected.
 
-    Freemium models where the core remains open-source and free, but additional paid features or services exist.
+    The original copyright holder reserves the right to offer additional commercial or freemium versions independently.
 
-Any such commercial offerings must remain compatible with the open-source nature of the Original Work.
-4. Derivative Works Must Be Open Source
+5. Warranty Disclaimer
 
-Any Derivative Work you create and distribute must be licensed as open-source under the same terms as this license (NLv1).
+The Original Work and any Derivative Works are provided "AS IS," without warranty of any kind, either expressed or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement.
+6. Limitation of Liability
 
-    You must provide complete source code of the Derivative Work when distributing it.
+In no event shall the original copyright holder or contributors be liable for any claim, damages, or other liability arising from the use or distribution of the Original or Derivative Works.
+7. Termination
 
-    You must not impose additional restrictions that conflict with this license.
+    This license and the rights granted will terminate automatically if you fail to comply with any terms.
 
-    You must clearly state changes made to the Original Work.
+    Upon termination, you must cease all use, distribution, and modification of the Original and Derivative Works.
 
-5. Attribution and Notices
+    Termination does not affect rights granted to others who comply with this license.
 
-    You must give appropriate credit to the original author(s).
+8. Governing Law
 
-    You must include a copy of this license with every copy of the Original or Derivative Work.
+This license shall be governed by the laws of the jurisdiction where the original copyright holder resides, without regard to conflict of law principles.
+9. Acceptance
 
-    You must not remove, obscure, or alter existing copyright or license notices.
-
-6. Disclaimer of Warranty
-
-THE ORIGINAL WORK AND ANY DERIVATIVE WORKS ARE PROVIDED "AS IS," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
-7. Limitation of Liability
-
-IN NO EVENT SHALL THE ORIGINAL COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OR DISTRIBUTION OF THE ORIGINAL OR DERIVATIVE WORKS.
-8. Termination
-
-    This license and the rights granted will terminate automatically if You fail to comply with any of its terms.
-
-    Upon termination, You must cease all use, distribution, and modification of the Original and Derivative Works.
-
-    However, termination does not affect rights granted to other licensees in compliance with this license.
-
-9. Governing Law
-
-This license shall be governed by and construed in accordance with the laws of the jurisdiction where the original copyright holder resides, without regard to conflict of law principles.
-10. Acceptance
-
-By using, copying, modifying, or distributing the Original or Derivative Work, You agree to be bound by the terms of this license.
+By using, copying, modifying, or distributing the Original or Derivative Work, you agree to be bound by the terms of this license.
