@@ -85,6 +85,6 @@ Each package contains a manifest file (`*.ucn-manifest`) with metadata, dependen
 
 ## License
 
-This project is licensed under the NLv1 See the [LICENSE](LICENSE) file for details.
+This project is licensed under the NLv2,See the [LICENSE](LICENSE) file for details.
 
 ---
