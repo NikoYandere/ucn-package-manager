@@ -42,13 +42,13 @@ Once set up, you can manage packages with simple commands.
 UCN does **not** come with pre-configured repositories. The default repository that is commonly used is:
 
 ```
-https://nikoyandere.github.io/ucn-repo
+https://nikoyandere.github.io/ucnhub
 ```
 
 You must add this repository explicitly:
 
 ```bash
-ucn add-repo https://nikoyandere.github.io/ucn-repo
+ucn add-repo https://nikoyandere.github.io/ucnhub
 ```
 
 ---
