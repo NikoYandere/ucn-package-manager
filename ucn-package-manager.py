@@ -76,6 +76,19 @@ def install_ucn(file_path):
     if meta.get('exec'):
         subprocess.run(meta['exec'], shell=True, check=True, cwd=pkg_dir)
 
+def install_ucb(file_path):
+    with zipfile.ZipFile(file_path) as z:
+        tmp_dir = os.path.join('/tmp', 'ucb_unpack')
+        if os.path.exists(tmp_dir):
+            shutil.rmtree(tmp_dir)
+        os.makedirs(tmp_dir, exist_ok=True)
+        z.extractall(tmp_dir)
+        for item in os.listdir(tmp_dir):
+            if item.endswith('.ucn'):
+                ucn_path = os.path.join(tmp_dir, item)
+                install_ucn(ucn_path)
+        shutil.rmtree(tmp_dir)
+
 def run_ucn(pkg):
     pkg = pkg[:-4] if pkg.endswith('.ucn') else pkg
     base = os.path.join(PKG_BASE_DIR, pkg)
@@ -136,58 +149,33 @@ def download_with_progress(url, dest, pkg):
     except URLError:
         raise
 
-def install_from_repos(pkgs):
+def install_from_repos(pkgs, packagetype='ucn'):
+    if not os.path.exists(REPOS_FILE):
+        print("No repos")
+        return
+    repos = [r.strip().rstrip('/') for r in open(REPOS_FILE)]
     for pkg in pkgs:
-        name = pkg[:-4] if pkg.endswith('.ucn') else pkg
+        name = pkg[:-4] if pkg.endswith('.ucn') or pkg.endswith('.ucb') else pkg
         pkg_dir = os.path.join(PKG_BASE_DIR, name)
         if os.path.isdir(pkg_dir):
             print(f"Package {name} already installed")
             continue
-        if not os.path.exists(REPOS_FILE):
-            print("No repos")
-            return
-        repos = [r.strip().rstrip('/') for r in open(REPOS_FILE)]
         for r in repos:
-            url = f"{r}/{name}.ucn"
-            tmp = os.path.join('/tmp', f"{name}.ucn")
+            ext = '.ucb' if packagetype == 'ucb' else '.ucn'
+            url = f"{r}/{name}{ext}"
+            tmp = os.path.join('/tmp', f"{name}{ext}")
             try:
                 download_with_progress(url, tmp, name)
-                install_ucn(tmp)
+                if packagetype == 'ucb':
+                    install_ucb(tmp)
+                else:
+                    install_ucn(tmp)
                 os.remove(tmp)
                 break
             except Exception:
                 continue
         else:
             print(f"{name} not found in repos")
-
-def remove_package(pkg):
-    path = os.path.join(PKG_BASE_DIR, pkg)
-    if os.path.exists(path):
-        shutil.rmtree(path)
-    else:
-        print(f"{pkg} not installed")
-
-def update_package(pkg):
-    if not os.path.exists(REPOS_FILE):
-        print("No repos")
-        return
-    repos = [r.strip().rstrip('/') for r in open(REPOS_FILE)]
-    name = pkg
-    tmp = os.path.join('/tmp', f"{name}.ucn")
-    for r in repos:
-        url = f"{r}/{name}.ucn"
-        try:
-            download_with_progress(url, tmp, name)
-            pkg_dir = os.path.join(PKG_BASE_DIR, name)
-            if os.path.exists(pkg_dir):
-                shutil.rmtree(pkg_dir)
-            install_ucn(tmp)
-            os.remove(tmp)
-            break
-        except Exception:
-            continue
-    else:
-        print(f"{name} not found in repos")
 
 def list_packages():
     if not os.path.isdir(PKG_BASE_DIR):
@@ -200,35 +188,109 @@ def list_packages():
         for p in pkgs:
             print(p)
 
+def list_repo_packages():
+    if not os.path.exists(REPOS_FILE):
+        print("No repos")
+        return
+    repos = [r.strip().rstrip('/') for r in open(REPOS_FILE)]
+    for r in repos:
+        for list_file_name in ['packagelist.txt','package.list','packages.list','package-list.txt']:
+            url = f"{r}/{list_file_name}"
+            try:
+                with urllib.request.urlopen(url) as response:
+                    text = response.read().decode()
+                    print(f"Packages from {r}:")
+                    parse_and_print_package_list(text)
+                    break
+            except Exception:
+                continue
+
+def parse_and_print_package_list(text):
+    lines = text.splitlines()
+    in_packages = False
+    for line in lines:
+        line = line.strip()
+        if not line or line.startswith('#'):
+            continue
+        if line.lower() == '[packages]':
+            in_packages = True
+            continue
+        if in_packages:
+            if line.startswith('['): 
+                break
+            print(line)
+
+def remove_package(pkg):
+    path = os.path.join(PKG_BASE_DIR, pkg)
+    if os.path.exists(path):
+        shutil.rmtree(path)
+    else:
+        print(f"{pkg} not installed")
+
+def update_package(pkg, packagetype='ucn'):
+    if not os.path.exists(REPOS_FILE):
+        print("No repos")
+        return
+    repos = [r.strip().rstrip('/') for r in open(REPOS_FILE)]
+    name = pkg
+    tmp = os.path.join('/tmp', f"{name}.{ 'ucb' if packagetype=='ucb' else 'ucn'}")
+    for r in repos:
+        ext = 'ucb' if packagetype == 'ucb' else 'ucn'
+        url = f"{r}/{name}.{ext}"
+        try:
+            download_with_progress(url, tmp, name)
+            pkg_dir = os.path.join(PKG_BASE_DIR, name)
+            if os.path.exists(pkg_dir):
+                shutil.rmtree(pkg_dir)
+            if packagetype == 'ucb':
+                install_ucb(tmp)
+            else:
+                install_ucn(tmp)
+            os.remove(tmp)
+            break
+        except Exception:
+            continue
+    else:
+        print(f"{name} not found in repos")
+
 def main():
     if len(sys.argv) < 2:
-        print("Usage: install [--from-repos] <pkg1> [<pkg2> ...] | run <pkg> | remove <pkg> | update <pkg> | add-repo <url> | remove-repo <name> | list")
+        print("Usage: install [--from-repos] [--packagetype=ucb] <pkg1> [<pkg2> ...] | run <pkg> | remove <pkg> | update <pkg> [--packagetype=ucb] | add-repo <url> | remove-repo <name> | list | list-repo")
         return
     cmd = sys.argv[1]
+    packagetype = 'ucn'
+    args = sys.argv[2:]
+    if '--packagetype=ucb' in args:
+        packagetype = 'ucb'
+        args.remove('--packagetype=ucb')
     if cmd == 'list':
         list_packages()
         return
+    if cmd == 'list-repo':
+        list_repo_packages()
+        return
     if cmd == 'install':
-        args = sys.argv[2:]
         if args and args[0] == '--from-repos':
-            install_from_repos(args[1:])
+            install_from_repos(args[1:], packagetype)
             return
         for arg in args:
             if arg.endswith('.ucn'):
                 install_ucn(arg)
+            elif arg.endswith('.ucb'):
+                install_ucb(arg)
             else:
-                install_from_repos([arg])
+                install_from_repos([arg], packagetype)
         return
     if cmd == 'run':
-        run_ucn(sys.argv[2])
+        run_ucn(args[0])
     elif cmd == 'remove':
-        remove_package(sys.argv[2])
+        remove_package(args[0])
     elif cmd == 'update':
-        update_package(sys.argv[2])
+        update_package(args[0], packagetype)
     elif cmd == 'add-repo':
-        add_repo(sys.argv[2])
+        add_repo(args[0])
     elif cmd == 'remove-repo':
-        remove_repo(sys.argv[2])
+        remove_repo(args[0])
     else:
         print(f"Unknown: {cmd}")
 
